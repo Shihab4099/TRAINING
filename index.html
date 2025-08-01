@@ -1,47 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Industrial Training Logbook</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Industrial Training Logbook - Login</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      background: #f0f4f8;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
     }
 
     .container {
-      max-width: 400px;
-      margin: 80px auto;
-      background: white;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background-color: #ffffff;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
     }
 
-    h2 {
+    .card h2 {
       text-align: center;
-      color: #007BFF;
+      margin-bottom: 20px;
     }
 
-    input[type="text"], input[type="password"] {
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 12px;
-      margin: 10px 0 20px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
     }
 
     button {
       width: 100%;
       padding: 12px;
-      background-color: #007BFF;
+      background-color: #007BFF; /* blue button */
       color: white;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     button:hover {
@@ -49,47 +64,47 @@
     }
 
     footer {
-      background: #007BFF;
-      color: white;
       text-align: center;
-      padding: 12px;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
+      padding: 15px;
+      background-color: #007BFF;
+      color: white;
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h2>Login to Logbook</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Enter username" required>
-      <input type="password" id="password" placeholder="Enter password" required>
-      <button type="submit">Login</button>
-    </form>
-  </div>
+    <div class="content">
+      <div class="card">
+        <h2>Login to Logbook</h2>
+        <form id="loginForm">
+          <input type="text" id="username" placeholder="Enter Username" required>
+          <input type="password" id="password" placeholder="Enter Password" required>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
 
-  <footer>
-    &copy; 2025 Industrial Training Logbook
-  </footer>
+    <footer>
+      &copy; 2025 Industrial Training Logbook System
+    </footer>
+  </div>
 
   <script>
     const users = {
-      Ahmad: "24DC8007",
+      Ahmad: "24DCS07",
       Ali: "24DIT51",
       Idrisa: "24DIT040",
-      Adam: "24DIT",
-      Mohd: "24DIT$34",
-      Yassir: "24DIT",
-      Ahmed: "24DIT4",
-      Ismail: "24DC8005",
-      Mwingi: "24DC8012"
+      Adam: "24DIT056",
+      Mohd: "24DIT034",
+      Yassir: "24DIT015",
+      Ahmed: "24DIT04",
+      Ismail: "24DCS05",
+      Mwingi: "24DCS012"
+      Abuu: "24DCS08",
     };
 
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
-
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
 
@@ -101,6 +116,5 @@
       }
     });
   </script>
-
 </body>
 </html>
