@@ -7,60 +7,141 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+
+    header {
+      background-color: #007BFF;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
       padding: 20px;
-      background-color: #f0f9ff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    h2 {
-      color: #007BFF;
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
     }
-    textarea {
+
+    input[type="text"], textarea {
       width: 100%;
-      height: 150px;
-      margin-bottom: 10px;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
+
     button {
-      padding: 10px 15px;
+      margin-top: 20px;
+      padding: 12px 20px;
       background-color: #007BFF;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      cursor: pointer;
     }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
     .logout {
-      background-color: red;
       float: right;
+      background-color: red;
+    }
+
+    footer {
+      background: #007BFF;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
     }
   </style>
 </head>
 <body>
-  <button class="logout" onclick="logout()">Logout</button>
-  <h2>Welcome, <span id="userDisplay"></span></h2>
-  <p>Write your weekly logbook entry below:</p>
-  <textarea id="logText" placeholder="e.g. Monday: Cleaned computers..."></textarea>
-  <button onclick="saveLog()">Save Log</button>
-  <p id="saveMsg"></p>
+
+  <header>
+    <span id="studentName">Student Logbook</span>
+    <button class="logout" onclick="logout()">Logout</button>
+  </header>
+
+  <div class="container">
+    <h2>Weekly Log Entry</h2>
+    <form id="logForm">
+      <label for="week">Week Number</label>
+      <input type="text" id="week" placeholder="e.g. Week 1" required>
+
+      <label for="monday">Monday Task</label>
+      <textarea id="monday" placeholder="Describe what you did on Monday..." required></textarea>
+
+      <label for="tuesday">Tuesday Task</label>
+      <textarea id="tuesday" placeholder="Describe what you did on Tuesday..." required></textarea>
+
+      <label for="wednesday">Wednesday Task</label>
+      <textarea id="wednesday" placeholder="Describe what you did on Wednesday..." required></textarea>
+
+      <label for="thursday">Thursday Task</label>
+      <textarea id="thursday" placeholder="Describe what you did on Thursday..." required></textarea>
+
+      <label for="friday">Friday Task</label>
+      <textarea id="friday" placeholder="Describe what you did on Friday..." required></textarea>
+
+      <button type="submit">Save This Week</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Industrial Training Logbook
+  </footer>
 
   <script>
-    const user = localStorage.getItem("loggedInUser");
-    if (!user) {
+    const username = localStorage.getItem("loggedInUser");
+
+    if (!username) {
       window.location.href = "index.html";
     } else {
-      document.getElementById("userDisplay").textContent = user;
-      const existingLog = localStorage.getItem("log_" + user);
-      if (existingLog) {
-        document.getElementById("logText").value = existingLog;
-      }
-    }
-
-    function saveLog() {
-      const log = document.getElementById("logText").value;
-      localStorage.setItem("log_" + user, log);
-      document.getElementById("saveMsg").textContent = "Saved successfully!";
+      document.getElementById("studentName").textContent = `Welcome, ${username}`;
     }
 
     function logout() {
       localStorage.removeItem("loggedInUser");
       window.location.href = "index.html";
     }
+
+    document.getElementById("logForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const week = document.getElementById("week").value.trim();
+      const monday = document.getElementById("monday").value.trim();
+      const tuesday = document.getElementById("tuesday").value.trim();
+      const wednesday = document.getElementById("wednesday").value.trim();
+      const thursday = document.getElementById("thursday").value.trim();
+      const friday = document.getElementById("friday").value.trim();
+
+      const data = {
+        week, monday, tuesday, wednesday, thursday, friday
+      };
+
+      // Hifadhi data kwa jina la mtumiaji + wiki
+      const key = `${username}_week_${week}`;
+      localStorage.setItem(key, JSON.stringify(data));
+      alert("Log saved successfully!");
+      document.getElementById("logForm").reset();
+    });
   </script>
+
 </body>
 </html>
