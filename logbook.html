@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,11 +22,22 @@
       padding: 10px;
       width: 100%;
     }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
   <h2>Weekly Logbook</h2>
   <p>Logged in as: <span id="studentReg"></span></p>
+  
+  <div class="actions">
+    <button onclick="logout()">Logout</button>
+    <button onclick="viewLogs()">View Saved Logs</button>
+  </div>
+
   <label>Week No:</label><input type="number" id="weekNo" /><br />
   <label>Industrial Name:</label><input type="text" id="industrialName" /><br />
 
@@ -35,12 +47,14 @@
   <label>Wednesday</label><textarea id="wed"></textarea>
   <label>Thursday</label><textarea id="thu"></textarea>
   <label>Friday</label><textarea id="fri"></textarea>
+  
   <button onclick="saveLogbook()">Save Log</button>
+
+  <div id="logsContainer" style="margin-top: 30px;"></div>
 
   <script>
     const regNo = localStorage.getItem("regNo");
-    if (!regNo) window.location.href = "index.html"; // Redirect if not logged in
-
+    if (!regNo) window.location.href = "index.html";
     document.getElementById("studentReg").innerText = regNo;
 
     function saveLogbook() {
@@ -57,6 +71,31 @@
       const key = `logbook_${regNo}_week_${data.weekNo}`;
       localStorage.setItem(key, JSON.stringify(data));
       alert("Log saved successfully!");
+    }
+
+    function logout() {
+      localStorage.removeItem("regNo");
+      window.location.href = "index.html";
+    }
+
+    function viewLogs() {
+      const logsContainer = document.getElementById("logsContainer");
+      logsContainer.innerHTML = "<h3>Saved Logs:</h3>";
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(`logbook_${regNo}_week_`)) {
+          const log = JSON.parse(localStorage.getItem(key));
+          logsContainer.innerHTML += `
+            <div style="border:1px solid #ccc; padding:10px; margin-top:10px;">
+              <strong>Week ${log.weekNo}</strong> - ${log.industrialName}<br>
+              <strong>Mon:</strong> ${log.monday}<br>
+              <strong>Tue:</strong> ${log.tuesday}<br>
+              <strong>Wed:</strong> ${log.wednesday}<br>
+              <strong>Thu:</strong> ${log.thursday}<br>
+              <strong>Fri:</strong> ${log.friday}
+            </div>`;
+        }
+      }
     }
   </script>
 </body>
