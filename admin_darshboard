@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #fdfdfd;
+    }
+    h2 {
+      color: #007BFF;
+    }
+    .log-entry {
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .logout {
+      background-color: red;
+      color: white;
+      padding: 8px;
+      border: none;
+      float: right;
+    }
+  </style>
+</head>
+<body>
+  <h2>Admin Dashboard</h2>
+  <button class="logout" onclick="logout()">Logout</button>
+  <div id="allLogs"></div>
+
+  <script>
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "admin.html";
+    }
+
+    const container = document.getElementById("allLogs");
+    const keys = Object.keys(localStorage);
+
+    const studentLogs = keys.filter(k => k.startsWith("logbook_"));
+
+    if (studentLogs.length === 0) {
+      container.innerHTML = "<p>No logs found.</p>";
+    } else {
+      studentLogs.forEach(key => {
+        const log = JSON.parse(localStorage.getItem(key));
+        const parts = key.split("_");
+        const regNo = parts[1];
+        const weekNo = parts[3];
+
+        container.innerHTML += `
+          <div class="log-entry">
+            <strong>Student:</strong> ${regNo}<br>
+            <strong>Week:</strong> ${weekNo}<br>
+            <strong>Industrial Name:</strong> ${log.industrialName}<br>
+            <strong>Mon:</strong> ${log.monday}<br>
+            <strong>Tue:</strong> ${log.tuesday}<br>
+            <strong>Wed:</strong> ${log.wednesday}<br>
+            <strong>Thu:</strong> ${log.thursday}<br>
+            <strong>Fri:</strong> ${log.friday}<br>
+          </div>
+        `;
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "admin.html";
+    }
+  </script>
+</body>
+</html>
