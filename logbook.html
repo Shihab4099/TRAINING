@@ -1,101 +1,65 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Logbook - Weekly Report</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Logbook</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background-color: #f9f9f9;
+      background-color: #f0f9ff;
     }
     h2 {
       color: #007BFF;
     }
     textarea {
       width: 100%;
-      height: 60px;
+      height: 150px;
       margin-bottom: 10px;
     }
-    input, button {
-      margin-bottom: 10px;
-      padding: 10px;
-      width: 100%;
+    button {
+      padding: 10px 15px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
-    .actions {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+    .logout {
+      background-color: red;
+      float: right;
     }
   </style>
 </head>
 <body>
-  <h2>Weekly Logbook</h2>
-  <p>Logged in as: <span id="studentReg"></span></p>
-  
-  <div class="actions">
-    <button onclick="logout()">Logout</button>
-    <button onclick="viewLogs()">View Saved Logs</button>
-  </div>
-
-  <label>Week No:</label><input type="number" id="weekNo" /><br />
-  <label>Industrial Name:</label><input type="text" id="industrialName" /><br />
-
-  <h3>Daily Tasks</h3>
-  <label>Monday</label><textarea id="mon"></textarea>
-  <label>Tuesday</label><textarea id="tue"></textarea>
-  <label>Wednesday</label><textarea id="wed"></textarea>
-  <label>Thursday</label><textarea id="thu"></textarea>
-  <label>Friday</label><textarea id="fri"></textarea>
-  
-  <button onclick="saveLogbook()">Save Log</button>
-
-  <div id="logsContainer" style="margin-top: 30px;"></div>
+  <button class="logout" onclick="logout()">Logout</button>
+  <h2>Welcome, <span id="userDisplay"></span></h2>
+  <p>Write your weekly logbook entry below:</p>
+  <textarea id="logText" placeholder="e.g. Monday: Cleaned computers..."></textarea>
+  <button onclick="saveLog()">Save Log</button>
+  <p id="saveMsg"></p>
 
   <script>
-    const regNo = localStorage.getItem("regNo");
-    if (!regNo) window.location.href = "index.html";
-    document.getElementById("studentReg").innerText = regNo;
+    const user = localStorage.getItem("loggedInUser");
+    if (!user) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById("userDisplay").textContent = user;
+      const existingLog = localStorage.getItem("log_" + user);
+      if (existingLog) {
+        document.getElementById("logText").value = existingLog;
+      }
+    }
 
-    function saveLogbook() {
-      const data = {
-        weekNo: document.getElementById("weekNo").value,
-        industrialName: document.getElementById("industrialName").value,
-        monday: document.getElementById("mon").value,
-        tuesday: document.getElementById("tue").value,
-        wednesday: document.getElementById("wed").value,
-        thursday: document.getElementById("thu").value,
-        friday: document.getElementById("fri").value
-      };
-
-      const key = `logbook_${regNo}_week_${data.weekNo}`;
-      localStorage.setItem(key, JSON.stringify(data));
-      alert("Log saved successfully!");
+    function saveLog() {
+      const log = document.getElementById("logText").value;
+      localStorage.setItem("log_" + user, log);
+      document.getElementById("saveMsg").textContent = "Saved successfully!";
     }
 
     function logout() {
-      localStorage.removeItem("regNo");
+      localStorage.removeItem("loggedInUser");
       window.location.href = "index.html";
-    }
-
-    function viewLogs() {
-      const logsContainer = document.getElementById("logsContainer");
-      logsContainer.innerHTML = "<h3>Saved Logs:</h3>";
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith(`logbook_${regNo}_week_`)) {
-          const log = JSON.parse(localStorage.getItem(key));
-          logsContainer.innerHTML += `
-            <div style="border:1px solid #ccc; padding:10px; margin-top:10px;">
-              <strong>Week ${log.weekNo}</strong> - ${log.industrialName}<br>
-              <strong>Mon:</strong> ${log.monday}<br>
-              <strong>Tue:</strong> ${log.tuesday}<br>
-              <strong>Wed:</strong> ${log.wednesday}<br>
-              <strong>Thu:</strong> ${log.thursday}<br>
-              <strong>Fri:</strong> ${log.friday}
-            </div>`;
-        }
-      }
     }
   </script>
 </body>
