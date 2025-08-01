@@ -7,86 +7,66 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #e0f0ff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-
     .login-box {
-      background-color: white;
-      padding: 2rem;
+      background: white;
+      padding: 20px 30px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    .login-box h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .login-box input {
+    input, button {
+      display: block;
       width: 100%;
-      padding: 0.5rem;
-      margin: 0.5rem 0;
+      padding: 10px;
+      margin-top: 10px;
     }
-
-    .login-box button {
-      width: 100%;
-      padding: 0.6rem;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .error {
-      color: red;
+    h2 {
       text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <h2>Log In</h2>
-    <input type="text" id="username" placeholder="Username" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <button onclick="login()">Login</button>
-    <p class="error" id="error-msg"></p>
+    <h2>Login to Logbook</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
   </div>
 
   <script>
-    const users = [
-      { username: "Ahmad", password: "24DC007" },
-      { username: "Ali", password: "24DIT51" },
-      { username: "Idrisa", password: "24DIT040" },
-      { username: "Adam", password: "24DIT024" },
-      { username: "Mohd", password: "24DIT34" },
-      { username: "Yassir", password: "24DIT025" },
-      { username: "Ahmed", password: "24DIT04" },
-      { username: "Ismail", password: "24DC005" },
-      { username: "Mwinyi", password: "24DC012" }
-    ];
+    const users = {
+      Ahmad: "24DCS07",
+      Ali: "24DIT051",
+      Idrisa: "24DIT040",
+      Adam: "24DIT055",
+      Mohd: "24DIT034",
+      Yassir: "24DIT014",
+      Ahmed: "24DIT04",
+      Ismail: "24DCS05",
+      Mwinyi: "24DCS012"
+      Abuu:"24DCS08
+    };
 
-    function login() {
-      const uname = document.getElementById("username").value.trim();
-      const pwd = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("error-msg");
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-      const user = users.find(
-        u => u.username.toLowerCase() === uname.toLowerCase() && u.password === pwd
-      );
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
 
-      if (user) {
-        localStorage.setItem("loggedInUser", user.username);
+      if (users[username] && users[username] === password) {
+        localStorage.setItem("loggedInUser", username);
         window.location.href = "logbook.html";
       } else {
-        errorMsg.textContent = "Invalid username or password";
+        alert("Wrong username or password");
       }
-    }
+    });
   </script>
 </body>
 </html>
