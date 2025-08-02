@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Weeks</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007BFF;
+    }
+
+    .week {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-left: 6px solid #007BFF;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .logout {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .logout button {
+      padding: 10px 20px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Weekly Reports</h1>
+  <div id="weeksContainer"></div>
+
+  <div class="logout">
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      alert("You must log in first");
+      window.location.href = 'index.html';
+    }
+
+    const allData = JSON.parse(localStorage.getItem('logbookData')) || [];
+    const userData = allData.filter(item => item.username === currentUser);
+
+    const container = document.getElementById('weeksContainer');
+
+    if (userData.length === 0) {
+      container.innerHTML = "<p>You haven't added any weekly reports yet.</p>";
+    } else {
+      userData.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = "week";
+        div.innerHTML = `
+          <strong>Week ${entry.week}</strong><br>
+          <em>Industry:</em> ${entry.industry}<br><br>
+          <strong>Tasks:</strong><br>
+          Monday: ${entry.monday}<br>
+          Tuesday: ${entry.tuesday}<br>
+          Wednesday: ${entry.wednesday}<br>
+          Thursday: ${entry.thursday}<br>
+          Friday: ${entry.friday}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
