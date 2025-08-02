@@ -1,97 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Admin Panel</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f0f8ff;
-      margin: 0;
+      background: #f4f4f4;
       padding: 20px;
     }
 
-    h2 {
+    h1 {
+      text-align: center;
       color: #007BFF;
     }
 
-    .report {
-      background-color: white;
+    .entry {
+      background: white;
       padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 10px;
+      margin: 10px 0;
+      border-left: 6px solid #007BFF;
       box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
+    .entry button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .entry button:hover {
+      background-color: #c82333;
+    }
+
     .logout {
-      margin-top: 40px;
       text-align: center;
+      margin-top: 30px;
     }
 
     .logout button {
-      background-color: #007BFF;
+      padding: 10px 20px;
+      background-color: #6c757d;
       color: white;
-      padding: 10px 25px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
     }
 
     .logout button:hover {
-      background-color: #0056b3;
+      background-color: #5a6268;
     }
   </style>
 </head>
 <body>
-
-  <h2>Admin Panel - Student Reports</h2>
-
-  <div id="reportList"></div>
+  <h1>Admin: View and Delete Reports</h1>
+  <div id="logbookContainer"></div>
 
   <div class="logout">
     <button onclick="logout()">Logout</button>
   </div>
 
   <script>
-    // Hifadhi data ya wanafunzi wote kutoka localStorage
-    function loadReports() {
-      const reportList = document.getElementById("reportList");
-      reportList.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem('logbookData')) || [];
+    const container = document.getElementById('logbookContainer');
 
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith("logbook_")) {
-          const data = JSON.parse(localStorage.getItem(key));
-          const studentEmail = key.replace("logbook_", "");
-          const div = document.createElement("div");
-          div.className = "report";
+    function renderData() {
+      container.innerHTML = "";
 
-          div.innerHTML = `<strong>${studentEmail}</strong><br/>${formatReport(data)}`;
-          reportList.appendChild(div);
-        }
+      if (data.length === 0) {
+        container.innerHTML = "<p>No reports available.</p>";
+        return;
       }
+
+      data.forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.className = "entry";
+        div.innerHTML = `
+          <strong>User:</strong> ${entry.username}<br>
+          <strong>Week:</strong> ${entry.week}<br>
+          <strong>Industry:</strong> ${entry.industry}<br><br>
+          <strong>Tasks:</strong><br>
+          Monday: ${entry.monday}<br>
+          Tuesday: ${entry.tuesday}<br>
+          Wednesday: ${entry.wednesday}<br>
+          Thursday: ${entry.thursday}<br>
+          Friday: ${entry.friday}<br>
+          <button onclick="deleteEntry(${index})">Delete</button>
+        `;
+        container.appendChild(div);
+      });
     }
 
-    function formatReport(reportData) {
-      let output = "";
-      for (const [week, days] of Object.entries(reportData)) {
-        output += `<u><b>${week}</b></u><ul>`;
-        for (const [day, task] of Object.entries(days)) {
-          output += `<li><b>${day}:</b> ${task}</li>`;
-        }
-        output += "</ul>";
+    function deleteEntry(index) {
+      if (confirm("Are you sure you want to delete this report?")) {
+        data.splice(index, 1);
+        localStorage.setItem('logbookData', JSON.stringify(data));
+        renderData();
       }
-      return output;
     }
 
     function logout() {
-      window.location.href = "index.html";
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
     }
 
-    loadReports();
+    renderData();
   </script>
-
 </body>
 </html>
