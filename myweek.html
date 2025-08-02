@@ -2,90 +2,120 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Weeks</title>
+  <title>Weekly Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PDF library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      background-color: #f4f4f4;
+      background: #f2f2f2;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: auto;
     }
 
     h1 {
-      text-align: center;
-      color: #007BFF;
-    }
-
-    .week {
-      background: white;
-      padding: 15px;
-      margin: 10px 0;
-      border-left: 6px solid #007BFF;
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-    }
-
-    .logout {
-      margin-top: 40px;
+      color: #0077cc;
       text-align: center;
     }
 
-    .logout button {
-      padding: 10px 20px;
-      background-color: #dc3545;
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 5px 0;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #0077cc;
       color: white;
       border: none;
-      border-radius: 6px;
+      padding: 10px 20px;
+      border-radius: 8px;
       cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .logout button:hover {
-      background-color: #c82333;
+    button:hover {
+      background-color: #005fa3;
     }
   </style>
 </head>
 <body>
-  <h1>My Weekly Reports</h1>
-  <div id="weeksContainer"></div>
+  <div class="container">
+    <h1>Weekly Report</h1>
 
-  <div class="logout">
-    <button onclick="logout()">Logout</button>
+    <div id="weeklyReport">Loading...</div>
+
+    <button onclick="downloadPDF()">Download as PDF</button>
   </div>
 
   <script>
-    const currentUser = localStorage.getItem('currentUser');
-    if (!currentUser) {
-      alert("You must log in first");
-      window.location.href = 'index.html';
-    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const week = urlParams.get("week");
+    const regNumber = localStorage.getItem("regNumber");
+    const fullName = localStorage.getItem("fullName");
+    const company = localStorage.getItem("company");
 
-    const allData = JSON.parse(localStorage.getItem('logbookData')) || [];
-    const userData = allData.filter(item => item.username === currentUser);
+    const key = `${regNumber}_week${week}`;
+    const savedData = JSON.parse(localStorage.getItem(key));
+    const div = document.getElementById("weeklyReport");
 
-    const container = document.getElementById('weeksContainer');
-
-    if (userData.length === 0) {
-      container.innerHTML = "<p>You haven't added any weekly reports yet.</p>";
+    if (savedData) {
+      div.innerHTML = `
+        <p><strong>Name:</strong> ${fullName}</p>
+        <p><strong>Reg No:</strong> ${regNumber}</p>
+        <p><strong>Company:</strong> ${company}</p>
+        <p><strong>Week:</strong> ${week}</p>
+        <hr>
+        <ul>
+          ${Object.entries(savedData).map(([day, task]) => `<li><strong>${day}:</strong> ${task}</li>`).join('')}
+        </ul>
+      `;
     } else {
-      userData.forEach(entry => {
-        const div = document.createElement('div');
-        div.className = "week";
-        div.innerHTML = `
-          <strong>Week ${entry.week}</strong><br>
-          <em>Industry:</em> ${entry.industry}<br><br>
-          <strong>Tasks:</strong><br>
-          Monday: ${entry.monday}<br>
-          Tuesday: ${entry.tuesday}<br>
-          Wednesday: ${entry.wednesday}<br>
-          Thursday: ${entry.thursday}<br>
-          Friday: ${entry.friday}
-        `;
-        container.appendChild(div);
-      });
+      div.innerHTML = `<p>No data found for this week.</p>`;
     }
 
-    function logout() {
-      localStorage.removeItem('currentUser');
-      window.location.href = 'index.html';
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 10;
+      doc.setFontSize(14);
+      doc.text(`Industrial Training Report - Week ${week}`, 10, y);
+      y += 10;
+
+      doc.setFontSize(12);
+      doc.text(`Name: ${fullName}`, 10, y); y += 7;
+      doc.text(`Registration No: ${regNumber}`, 10, y); y += 7;
+      doc.text(`Company: ${company}`, 10, y); y += 10;
+
+      doc.text("Weekly Tasks:", 10, y); y += 8;
+
+      for (const day in savedData) {
+        if (savedData.hasOwnProperty(day)) {
+          const task = savedData[day];
+          doc.text(`${day}: ${task}`, 10, y);
+          y += 7;
+        }
+      }
+
+      doc.save(`week_${week}_report.pdf`);
     }
   </script>
 </body>
