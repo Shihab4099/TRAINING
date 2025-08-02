@@ -3,43 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Training Login</title>
+  <title>Login - Industrial Training</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
     .card {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 30px;
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
     }
 
-    h2 {
+    .card h2 {
       text-align: center;
+      margin-bottom: 20px;
       color: #007BFF;
     }
 
     input {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
+      padding: 12px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
+      border-radius: 10px;
     }
 
     button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background-color: #007BFF;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
     }
 
@@ -48,54 +61,50 @@
     }
 
     .footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
       background-color: #007BFF;
       color: white;
       text-align: center;
-      padding: 10px 0;
+      padding: 12px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Student Login</h2>
-    <input type="text" id="username" placeholder="Enter your username" required />
-    <input type="password" id="password" placeholder="Enter your password" required />
-    <button onclick="login()">Login</button>
-    <p id="error" style="color: red; text-align: center;"></p>
+  <div class="container">
+    <div class="card">
+      <h2>Login to Training Logbook</h2>
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <input type="password" id="password" placeholder="Enter your password" required />
+      <button onclick="login()">Login</button>
+    </div>
   </div>
 
   <div class="footer">
-    &copy; 2025 Industrial Training Logbook
+    &copy; 2025 Industrial Training System
   </div>
 
   <script>
-    const users = {
-      "ahmad": "24DCS07",
-      "idrisa": "24DIT040",
-      "ali": "24DIT051",
-      "adam": "24DIT034",
-      "yassir": "24DIT015",
-      "ismail": "24DCS05",
-      "abuu": "24DCS08",
-      "mwinyi": "24DCS012",
-      "hassan": "24DCS011"
-    };
-
     function login() {
-      const username = document.getElementById("username").value.trim().toLowerCase();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      if (users[username] === password) {
-        localStorage.setItem("username", username);
-        window.location.href = "logbook.html";
+      if (email === "" || password === "") {
+        alert("Please fill in both email and password.");
+        return;
+      }
+
+      // Save email to localStorage
+      localStorage.setItem("email", email);
+
+      // Check if admin
+      if (email === "admin@example.com") {
+        window.location.href = "admin.html";
       } else {
-        document.getElementById("error").innerText = "Wrong username or password!";
+        window.location.href = "logbook.html";
       }
     }
   </script>
+
 </body>
 </html>
