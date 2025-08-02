@@ -16,6 +16,19 @@
       color: white;
       padding: 15px;
       text-align: center;
+      position: relative;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: red;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
     .container {
@@ -51,15 +64,6 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .logout {
-      float: right;
-      background-color: red;
-    }
-
     footer {
       background: #007BFF;
       color: white;
@@ -69,34 +73,42 @@
       width: 100%;
       bottom: 0;
     }
+
+    .welcome {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <span>FIELD STUDENT LOG BOOK</span>
+    FIELD STUDENT LOG BOOK
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
   <div class="container">
+    <div class="welcome" id="studentName"></div>
     <h2>Weekly Log Entry</h2>
     <form id="logForm">
       <label for="week">Week Number</label>
       <input type="text" id="week" placeholder="e.g. Week 1" required>
 
       <label for="monday">Monday Task</label>
-      <textarea id="monday" placeholder="Describe what you did on Monday..." required></textarea>
+      <textarea id="monday" placeholder="What did you do on Monday?" required></textarea>
 
       <label for="tuesday">Tuesday Task</label>
-      <textarea id="tuesday" placeholder="Describe what you did on Tuesday..." required></textarea>
+      <textarea id="tuesday" placeholder="What did you do on Tuesday?" required></textarea>
 
       <label for="wednesday">Wednesday Task</label>
-      <textarea id="wednesday" placeholder="Describe what you did on Wednesday..." required></textarea>
+      <textarea id="wednesday" placeholder="What did you do on Wednesday?" required></textarea>
 
       <label for="thursday">Thursday Task</label>
-      <textarea id="thursday" placeholder="Describe what you did on Thursday..." required></textarea>
+      <textarea id="thursday" placeholder="What did you do on Thursday?" required></textarea>
 
       <label for="friday">Friday Task</label>
-      <textarea id="friday" placeholder="Describe what you did on Friday..." required></textarea>
+      <textarea id="friday" placeholder="What did you do on Friday?" required></textarea>
 
       <button type="submit">Save This Week</button>
     </form>
@@ -108,11 +120,10 @@
 
   <script>
     const username = localStorage.getItem("loggedInUser");
-
     if (!username) {
       window.location.href = "index.html";
     } else {
-      document.getElementById("studentName").textContent = `Welcome, ${username}`;
+      document.getElementById("studentName").textContent = `Welcome, ${username.toUpperCase()}`;
     }
 
     function logout() {
@@ -134,13 +145,11 @@
         week, monday, tuesday, wednesday, thursday, friday
       };
 
-      // Hifadhi data kwa jina la mtumiaji + wiki
       const key = `${username}_week_${week}`;
       localStorage.setItem(key, JSON.stringify(data));
       alert("Log saved successfully!");
       document.getElementById("logForm").reset();
     });
   </script>
-
 </body>
 </html>
