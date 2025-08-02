@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Logbook</title>
+  <title>Logbook</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background-color: #f8f9fa;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -16,114 +19,67 @@
       color: white;
       padding: 15px;
       text-align: center;
-      position: relative;
-    }
-
-    .logout-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      background: red;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
     }
 
     .container {
-      max-width: 800px;
-      margin: 20px auto;
-      background: white;
+      flex: 1;
       padding: 20px;
+    }
+
+    .card {
+      background-color: white;
       border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 12px 20px;
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
 
     footer {
-      background: #007BFF;
-      color: white;
+      background-color: #007BFF;
+      padding: 10px;
       text-align: center;
-      padding: 12px;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
     }
 
-    .welcome {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #333;
+    button.logout {
+      padding: 10px 20px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <header>
-    FIELD STUDENT LOG BOOK
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <h2>Industrial Training Logbook</h2>
+    <p id="welcomeUser"></p>
   </header>
 
   <div class="container">
-    <div class="welcome" id="studentName"></div>
-    <h2>Weekly Log Entry</h2>
-    <form id="logForm">
-      <label for="week">Week Number</label>
-      <input type="text" id="week" placeholder="e.g. Week 1" required>
-
-      <label for="monday">Monday Task</label>
-      <textarea id="monday" placeholder="What did you do on Monday?" required></textarea>
-
-      <label for="tuesday">Tuesday Task</label>
-      <textarea id="tuesday" placeholder="What did you do on Tuesday?" required></textarea>
-
-      <label for="wednesday">Wednesday Task</label>
-      <textarea id="wednesday" placeholder="What did you do on Wednesday?" required></textarea>
-
-      <label for="thursday">Thursday Task</label>
-      <textarea id="thursday" placeholder="What did you do on Thursday?" required></textarea>
-
-      <label for="friday">Friday Task</label>
-      <textarea id="friday" placeholder="What did you do on Friday?" required></textarea>
-
-      <button type="submit">Save This Week</button>
-    </form>
+    <div class="card">
+      <h3>Weekly Report</h3>
+      <p><strong>Monday Task:</strong> <input type="text" id="mondayTask" /></p>
+      <p><strong>Tuesday Task:</strong> <input type="text" id="tuesdayTask" /></p>
+      <p><strong>Wednesday Task:</strong> <input type="text" id="wednesdayTask" /></p>
+      <p><strong>Thursday Task:</strong> <input type="text" id="thursdayTask" /></p>
+      <p><strong>Friday Task:</strong> <input type="text" id="fridayTask" /></p>
+      <button onclick="saveTasks()">Save This Week</button>
+    </div>
   </div>
 
   <footer>
-    &copy; 2025 Industrial Training Logbook
+    <button class="logout" onclick="logout()">Logout</button>
   </footer>
 
   <script>
-    const username = localStorage.getItem("loggedInUser");
-    if (!username) {
+    const user = localStorage.getItem("loggedInUser");
+
+    if (!user) {
       window.location.href = "index.html";
     } else {
-      document.getElementById("studentName").textContent = `Welcome, ${username.toUpperCase()}`;
+      document.getElementById("welcomeUser").innerText = "Logged in as: " + user;
     }
 
     function logout() {
@@ -131,25 +87,32 @@
       window.location.href = "index.html";
     }
 
-    document.getElementById("logForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    function saveTasks() {
+      const monday = document.getElementById("mondayTask").value;
+      const tuesday = document.getElementById("tuesdayTask").value;
+      const wednesday = document.getElementById("wednesdayTask").value;
+      const thursday = document.getElementById("thursdayTask").value;
+      const friday = document.getElementById("fridayTask").value;
 
-      const week = document.getElementById("week").value.trim();
-      const monday = document.getElementById("monday").value.trim();
-      const tuesday = document.getElementById("tuesday").value.trim();
-      const wednesday = document.getElementById("wednesday").value.trim();
-      const thursday = document.getElementById("thursday").value.trim();
-      const friday = document.getElementById("friday").value.trim();
-
-      const data = {
-        week, monday, tuesday, wednesday, thursday, friday
+      const tasks = {
+        monday, tuesday, wednesday, thursday, friday
       };
 
-      const key = `${username}_week_${week}`;
-      localStorage.setItem(key, JSON.stringify(data));
-      alert("Log saved successfully!");
-      document.getElementById("logForm").reset();
-    });
+      localStorage.setItem(`logbook_${user}_week1`, JSON.stringify(tasks));
+      alert("Tasks saved successfully!");
+    }
+
+    // Load existing data
+    const saved = localStorage.getItem(`logbook_${user}_week1`);
+    if (saved) {
+      const data = JSON.parse(saved);
+      document.getElementById("mondayTask").value = data.monday || "";
+      document.getElementById("tuesdayTask").value = data.tuesday || "";
+      document.getElementById("wednesdayTask").value = data.wednesday || "";
+      document.getElementById("thursdayTask").value = data.thursday || "";
+      document.getElementById("fridayTask").value = data.friday || "";
+    }
   </script>
+
 </body>
 </html>
